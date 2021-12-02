@@ -45,7 +45,7 @@ class WPGCS_Database_Loader {
         
         $this->dependencies = $dependencies;
         
-        $this->db_version = "1.0";
+        $this->db_version = "1.1";
         $this->additional_table_prefix = 'wpgcs_';
         
         
@@ -58,6 +58,7 @@ class WPGCS_Database_Loader {
                 activation_date datetime,
                 last_reload_date datetime,
                 amount varchar(10),
+                total_amount_loaded varchar(10),
                 PRIMARY KEY  (id),
                 KEY gcn (gift_card_number)
             "

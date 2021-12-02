@@ -101,14 +101,17 @@ class WPGCS_Gift_Cards  {
             $card_result = $wpdb->insert($wpdb->prefix.'wpgcs_gift_cards', array(
                 'gift_card_number' => $params['id'],
                 'amount' => $params['amount'],
+                'total_amount_loaded' => $params['amount'],
                 'activation_date' => date('Y-m-d H:i:s'),
                 'last_reload_date' => date('Y-m-d H:i:s')
             ));
         }
         else{
             //We found a matching card, so update instead...
+            $total_amount_loaded = $params['amount'] - $existing_cards[0]->amount;
             $card_result = $wpdb->update($wpdb->prefix.'wpgcs_gift_cards', array(
                 'amount' => $params['amount'],
+                'total_amount_loaded' => $existing_cards[0]->total_amount_loaded ? $total_amount_loaded + $existing_cards[0]->total_amount_loaded : $params['amount'],
                 'last_reload_date' => date('Y-m-d H:i:s')
             ), array(
                 'gift_card_number' => $params['id']
