@@ -107,6 +107,7 @@ class WPGCS_Manager {
             require_once(self::$plugin_path."classes/wpgcs-api-modifications.php");
             require_once(self::$plugin_path."classes/wpgcs-database-loader.php");
             require_once(self::$plugin_path."classes/wpgcs-gift-cards.php");
+            require_once(self::$plugin_path."classes/wpgcs-woocommerce-overrides.php");
     }
     
     
@@ -114,6 +115,9 @@ class WPGCS_Manager {
         self::$dependencies['gift_cards'] = WPGCS_Gift_Cards::initialize();
         WPGCS_Database_Loader::initialize();
         WPGCS_API_Modifications::initialize(array(
+            'gift_cards' => self::$dependencies['gift_cards']
+        ));
+        WPGCS_Woocommerce_Overrides::initialize(array(
             'gift_cards' => self::$dependencies['gift_cards']
         ));
     }

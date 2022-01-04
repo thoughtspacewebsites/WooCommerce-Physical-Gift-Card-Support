@@ -44,6 +44,34 @@ class WPGCS_Gift_Cards  {
     }
 
 
+    public function add_balance($card_number, $amount){
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'wpgcs_gift_cards';
+        //First find the current balance
+        $current_balance = $wpdb->get_var( "SELECT amount FROM $table_name WHERE gift_card_number = '$card_number'" );
+        $existing_amount_loaded = $wpdb->get_var( "SELECT total_amount_loaded FROM $table_name WHERE gift_card_number = '$card_number'" );
+        
+        $new_balance = floatval($amount);
+        if($current_balance){
+            $amount_loaded = $new_balance;
+            $new_balance += floatval($current_balance);
+            return $wpdb->update( $table_name, array( 
+                'amount' => $new_balance,
+                'last_reload_date' => date('Y-m-d H:i:s'),
+                'total_amount_loaded' => floatval($existing_amount_loaded) + $amount_loaded
+             ), array( 'gift_card_number' => $card_number) );
+        }
+        else{
+            return $wpdb->insert( $table_name, array( 
+                'gift_card_number' => $card_number, 
+                'amount' => $new_balance ,
+                'total_amount_loaded' => $new_balance,
+                'activation_date' => date('Y-m-d H:i:s'),
+                'last_reload_date' => date('Y-m-d H:i:s')
+            ) );
+        }
+        
+    }
 
     public function REST_get_cards(WP_REST_Request $request){
         global $wpdb;
