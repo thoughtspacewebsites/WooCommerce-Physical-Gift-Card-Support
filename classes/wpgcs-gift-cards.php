@@ -79,8 +79,33 @@ class WPGCS_Gift_Cards  {
 
         $page = $params['page'] ? $params['page'] - 1 : 0;
         $per_page = $params['per_page'] ? $params['per_page'] : 50;
+
+        $filters = $params['filters'] ? json_decode($params['filters']) : array();
  
-        $cards = $wpdb->get_results('SELECT SQL_CALC_FOUND_ROWS * from '.$wpdb->prefix.'wpgcs_gift_cards ORDER BY last_reload_date DESC LIMIT '.$per_page.' OFFSET '.$page*$per_page);
+        $query = 'SELECT SQL_CALC_FOUND_ROWS * from '.$wpdb->prefix.'wpgcs_gift_cards where 1=1';
+        
+        if($filters->number){
+            $query .= ' AND gift_card_number LIKE "%'.$filters->number.'%"';
+        }
+
+        if($filters->balance){
+            $query .= ' AND amount LIKE "%'.$filters->balance.'%"';
+        }
+
+        if($filters->activation_date){
+            $start_date = date('Y-m-d', strtotime($filters->activation_date));
+            $end_date = date('Y-m-d', strtotime($filters->activation_date));
+            $start_date .= ' 00:00:00';
+            $end_date .= ' 23:59:59';
+
+            $query .= '
+                HAVING (activation_date between "'.$start_date.'" and "'.$end_date.'") 
+            ';      
+        }
+        
+        $query .= ' ORDER BY last_reload_date DESC LIMIT '.$per_page.' OFFSET '.$page*$per_page;
+
+        $cards = $wpdb->get_results($query);
         $found_rows = $wpdb->get_results('SELECT FOUND_ROWS() as count');
         
         $response = new WP_REST_Response($cards, 200);
