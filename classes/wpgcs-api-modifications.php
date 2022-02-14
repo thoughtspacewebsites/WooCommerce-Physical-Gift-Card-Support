@@ -56,7 +56,7 @@ class WPGCS_API_Modifications {
                         return call_user_func_array(array($this->dependencies['gift_cards'], 'REST_get_cards'), array($request));
                     },
                     'permission_callback' => function(){
-                        return current_user_can('administrator') || current_user_can('employee') || current_user_can('shop_manager');
+                        return current_user_can('administrator') || current_user_can('employee') || current_user_can('retail_employee') || current_user_can('oakmont_manager');
                     }
                 )
             ),
@@ -68,7 +68,7 @@ class WPGCS_API_Modifications {
                         return call_user_func_array(array($this->dependencies['gift_cards'], 'REST_get_card_info'), array($request));
                     },
                     'permission_callback' => function(){
-                        return current_user_can('administrator') || current_user_can('employee') || current_user_can('shop_manager');
+                        return current_user_can('administrator') || current_user_can('employee') || current_user_can('retail_employee') || current_user_can('oakmont_manager');
                     }
                 )
             ),
@@ -80,7 +80,7 @@ class WPGCS_API_Modifications {
                         return call_user_func_array(array($this->dependencies['gift_cards'], 'REST_update_card'), array($request));
                     },
                     'permission_callback' => function(){
-                        return current_user_can('employee') || current_user_can('administrator') || current_user_can('shop_manager');
+                        return current_user_can('employee') || current_user_can('retail_employee') || current_user_can('administrator') || current_user_can('oakmont_manager');
                     }
                 )
             ),
