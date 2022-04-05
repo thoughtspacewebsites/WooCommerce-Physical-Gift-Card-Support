@@ -176,4 +176,27 @@ class WPGCS_Gift_Cards  {
     }
 
 
+
+    public function REST_delete_card(WP_REST_Request $request){
+        global $wpdb;
+        $params = $request->get_params();
+
+        if(!$params['id']){
+            return new WP_Error('missing_params', 'Please specify a gift card ID / number to delete');
+        }
+
+        $existing_cards  = $wpdb->get_results($wpdb->prepare('select * from '.$wpdb->prefix.'wpgcs_gift_cards where gift_card_number = %d', $params['id']));
+
+        if(!$existing_cards || !count($existing_cards)){
+            return new WP_Error('card_not_found', 'Card not found');
+        }
+        else{
+            $delete_result = $wpdb->delete($wpdb->prefix.'wpgcs_gift_cards', array(
+                'gift_card_number' => $params['id']
+            ));
+            return $delete_result === false ? new WP_Error('delete_failed', 'Failed to delete card') : true;
+        }
+    }
+
+
 }

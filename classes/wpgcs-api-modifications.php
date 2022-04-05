@@ -84,6 +84,19 @@ class WPGCS_API_Modifications {
                     }
                 )
             ),
+            array(
+                'route' => '/gift-cards/?(?P<id>\d*)/?',
+                'args' => array(
+                    'methods' => 'DELETE',
+                    'callback' => function(WP_REST_Request $request){
+                        return call_user_func_array(array($this->dependencies['gift_cards'], 'REST_delete_card'), array($request));
+                    },
+                    'permission_callback' => function(){
+                        return current_user_can('administrator') || current_user_can('oakmont_manager');
+                    }
+                )
+            ),
+
             
          
         );
