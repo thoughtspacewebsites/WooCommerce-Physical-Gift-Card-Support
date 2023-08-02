@@ -170,8 +170,14 @@ class WPGCS_Gateway_Gift_Card extends WC_Payment_Gateway {
 		$new_amount_paid = floatval($amount_already_paid) + floatval($_POST['payment_amount']);
 		$new_amount_paid = number_format($new_amount_paid, 2, '.', '');
 		
-		setlocale(LC_MONETARY, 'en_US.UTF-8');
-		$formatted_amount_paid = money_format('%.2n', floatval($_POST['payment_amount']));
+		// setlocale(LC_MONETARY, 'en_US.UTF-8');
+		// $formatted_amount_paid = money_format('%.2n', floatval($_POST['payment_amount']));
+
+		//Trying new way to format currency
+		$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
+		$change_due = $fmt->formatCurrency( floatval($_POST['payment_amount']), 'USD');
+
+		
 		
 		$paid_in_full = false;
 		$change_due = false;
